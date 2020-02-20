@@ -3,15 +3,22 @@ const WebSocket = require("ws")
 const uuid = require("uuid/v4")
 const DB = require("./db.json")
 const helpers = require("./helpers")
+var http = require("http")
+var express = require("express")
+var app = express()
+var port = process.env.PORT || 5000
+
+app.use(express.static(__dirname + "/"))
+
+var server = http.createServer(app)
+server.listen(port)
 
 DB.players = DB.players.map(p => ({
   ...p,
   active: true
 }))
 
-const wss = new WebSocket.Server({
-  port: 8081
-})
+const wss = new WebSocket.Server({ server })
 
 function Response(messageId, data) {
   this.messageId = messageId || ""
