@@ -108,7 +108,8 @@ const broadcastUpdateSessionInfo = (wss, session) => {
   broadcast(wss, new Response("sessionInfoUpdate", {
     masters: session.masters.map(m => m.player.name),
     picks,
-    pickPool: session.pickPool
+    pickPool: session.pickPool,
+    turn: session.masters[session.turn].player
   }))
 }
 
@@ -119,14 +120,44 @@ const messageResponses = {
       data: DB.players
     }
   },
-  createSession() {
+  createPlayer(data) {
+    if (DB.players.some(p => p.name === data.name)) {
+      return {
+        broadcast: false,
+        data: false
+      }
+    }
+    DB.players.push({
+      ...data,
+      active: true
+    })
+    
+    broadcast(wss, new Response("playerList", DB.players))
+
+    return {
+      broadcast: false,
+      data: true
+    }
+  },
+  createSession(data) {
+    console.log("createSession: ", data)
     session = new Session(uuid())
-    // pick masters
-    const masterPlayers = helpers.pickMasters(DB.players)
-    session.setMasters(
-      new SessionMaster(uuid(), masterPlayers[0]),
-      new SessionMaster(uuid(), masterPlayers[1])
-    )
+
+    if (data && data.master0 && data.master1) {
+      // masters from
+      session.setMasters(
+        new SessionMaster(uuid(), DB.players.find(p => p.name === data.master0)),
+        new SessionMaster(uuid(), DB.players.find(p => p.name === data.master1))
+      )
+    } else {
+      // pick masters
+      const masterPlayers = helpers.pickMasters(DB.players)
+      session.setMasters(
+        new SessionMaster(uuid(), masterPlayers[0]),
+        new SessionMaster(uuid(), masterPlayers[1])
+      )
+    }
+
     const skillRanges = [1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
     session.pickPool = helpers
       .preparePickablePlayers(session, DB.players) // sorted desc skill
@@ -153,6 +184,8 @@ const messageResponses = {
     sessionUpdateInterval = setInterval(() => {
       broadcastUpdateSessionInfo(wss, session)
     }, 2000)
+
+    broadcast(wss, new Response("playerList", DB.players))
 
     return {
       broadcast: false,
