@@ -109,7 +109,9 @@ const broadcastUpdateSessionInfo = (wss, session) => {
     masters: session.masters.map(m => m.player.name),
     picks,
     pickPool: session.pickPool,
-    turn: session.masters[session.turn].player
+    turn: session.masters[session.turn].player,
+    firstTeam: [...session.picks[session.masters[0].id]],
+    secondTeam: [...session.picks[session.masters[1].id]]
   }))
 }
 
