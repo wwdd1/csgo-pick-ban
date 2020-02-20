@@ -1,0 +1,40 @@
+{
+  "max_skill_rating": 10,
+  "players": [{
+    "name": "Yakari",
+    "skill": 8
+  }, {
+    "name": "WAZ85",
+    "skill": 6
+  }, {
+    "name": "Kimi",
+    "skill": 8
+  }, {
+    "name": "Francium",
+    "skill": 9
+  }, {
+    "name": "ScreamOfSnatch",
+    "skill": 6
+  }, {
+    "name": "Godey",
+    "skill": 8
+  }, {
+    "name": "Fipek",
+    "skill": 4
+  }, {
+    "name": "Gerfalcon",
+    "skill": 9
+  }, {
+    "name": "fnexx",
+    "skill": 7
+  }, {
+    "name": "Flankes",
+    "skill": 4
+  }, {
+    "name": "ozan",
+    "skill": 2
+  }, {
+    "name": "L.Makani",
+    "skill": 5
+  }]
+}
